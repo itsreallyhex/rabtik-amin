@@ -24,7 +24,7 @@ const T = {
   remaining: (n) => (n === 1 ? 'باقي لك سؤال واحد' : n === 2 ? 'باقي لك سؤالين' : `باقي لك ${n} أسئلة`),
   engineBadge: { malicious: 'ضار', suspicious: 'مشبوه' },
   sourceVT: (total) => `فحصناه بـ ${total} برنامج حماية عن طريق VirusTotal.`,
-  sourceGSB: 'هذا فحص سريع من قوائم Google Safe Browsing للمواقع الضارة، وما يعطي تفاصيل البرامج.',
+  sourceGSB: 'هذا فحص سريع من قائمة Google للمواقع الضارة، فما فيه تفاصيل عن برامج الحماية.',
   ratioNone: 'ولا برنامج حماية لقى فيه شي',
   ratioSome: (flagged, total) => `${flagged} من ${total} برنامج حماية علّموا عليه`,
 };
@@ -43,13 +43,13 @@ const VERDICT_UI = {
   dangerous: {
     icon: '#i-shield-x',
     title: 'الرابط هذا خطير، لا تفتحه!',
-    text: 'انكشف إنه ضار. لا تفتحه ولا تحط فيه أي بيانات، ولو أحد أرسله لك نبّهه.',
+    text: 'طلع ضار. لا تفتحه ولا تحط فيه أي بيانات، ولو أحد أرسله لك نبّهه.',
   },
 };
 
 const THREAT_LABELS = {
   MALWARE: 'فيه برامج ضارة (فيروسات)',
-  SOCIAL_ENGINEERING: 'موقع تصيّد واحتيال',
+  SOCIAL_ENGINEERING: 'موقع نصب يحاول يسرق بياناتك',
   UNWANTED_SOFTWARE: 'ينزّل برامج مزعجة ما تبيها',
   POTENTIALLY_HARMFUL_APPLICATION: 'فيه تطبيقات ممكن تضر جهازك',
 };
