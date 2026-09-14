@@ -59,6 +59,19 @@
         <p id="scan-hint" class="hint">ما نفتح الرابط ولا نحفظه، بس نسأل عنه خدمات فحص معروفة.</p>
         <p id="scan-error" class="form-error" role="alert" hidden></p>
       </form>
+
+      <div id="examples" class="examples" role="group" aria-labelledby="examples-title">
+        <p id="examples-title" class="examples-title">ما عندك رابط؟ جرب واحد من هذي</p>
+        <div class="example-group">
+          <p class="example-label"><span class="dot dot-safe" aria-hidden="true"></span>روابط آمنة</p>
+          <div id="examples-safe" class="example-list"></div>
+        </div>
+        <div class="example-group">
+          <p class="example-label"><span class="dot dot-danger" aria-hidden="true"></span>روابط خطيرة (تجريبية)</p>
+          <div id="examples-danger" class="example-list"></div>
+        </div>
+        <p class="hint">الروابط الخطيرة هنا صفحات تجريبية تستخدمها شركات الحماية عشان تختبر برامجها، يعني ما تضر.</p>
+      </div>
     </section>
 
     <section id="loading" class="card loading-card" hidden aria-live="polite">

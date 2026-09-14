@@ -54,6 +54,25 @@ const THREAT_LABELS = {
   POTENTIALLY_HARMFUL_APPLICATION: 'فيه تطبيقات ممكن تضر جهازك',
 };
 
+// Example links for people without a link to test.
+// "danger" entries are harmless test pages that security companies publish so scanners flag them.
+const EXAMPLES = {
+  safe: [
+    { label: 'google.com', url: 'https://www.google.com/' },
+    { label: 'youtube.com', url: 'https://www.youtube.com/' },
+    { label: 'wikipedia.org', url: 'https://www.wikipedia.org/' },
+    { label: 'apple.com', url: 'https://www.apple.com/' },
+    { label: 'github.com', url: 'https://github.com/' },
+  ],
+  danger: [
+    { label: 'eicar.org/eicar.com', url: 'https://secure.eicar.org/eicar.com' },
+    { label: 'eicar.org/eicar.com.txt', url: 'https://secure.eicar.org/eicar.com.txt' },
+    { label: 'eicar.org/eicarcom2.zip', url: 'https://secure.eicar.org/eicarcom2.zip' },
+    { label: 'wicar.org/eicar.com', url: 'http://malware.wicar.org/data/eicar.com' },
+    { label: 'testsafebrowsing/phishing', url: 'https://testsafebrowsing.appspot.com/s/phishing.html' },
+  ],
+};
+
 // ===== API calls & the fallback pattern =====
 
 async function callApi(name, body, timeoutMs) {
@@ -153,6 +172,7 @@ const el = {
   chat: $('chat'), messages: $('messages'), suggestions: $('suggestions'), chatForm: $('chat-form'),
   chatInput: $('chat-input'), chatSend: $('chat-send'), chatStatus: $('chat-status'),
   againWrap: $('again-wrap'), againBtn: $('again-btn'),
+  examples: $('examples'), examplesSafe: $('examples-safe'), examplesDanger: $('examples-danger'),
 };
 
 const prefersReducedMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -189,7 +209,34 @@ function setScanning(on) {
   el.scanBtn.disabled = on;
   el.urlInput.readOnly = on;
   el.scanBtnLabel.textContent = on ? T.scanningBtn : T.scanBtn;
+  for (const chip of el.examples.querySelectorAll('.example-chip')) chip.disabled = on;
 }
+
+function renderExamples() {
+  const chips = (list, kind) =>
+    list.map(({ label, url }) => {
+      const chip = h('button', `example-chip is-${kind}`);
+      chip.type = 'button';
+      chip.dataset.url = url;
+      chip.setAttribute('aria-label', `افحص ${label}`);
+      const text = h('bdi', null, label);
+      text.dir = 'ltr';
+      chip.append(text);
+      return chip;
+    });
+  el.examplesSafe.replaceChildren(...chips(EXAMPLES.safe, 'safe'));
+  el.examplesDanger.replaceChildren(...chips(EXAMPLES.danger, 'danger'));
+}
+
+// Clicking an example fills the box and runs the normal scan (it never opens the site).
+el.examples.addEventListener('click', (event) => {
+  const chip = event.target.closest('.example-chip');
+  if (!chip || el.scanBtn.disabled) return;
+  el.urlInput.value = chip.dataset.url;
+  el.scanForm.requestSubmit();
+});
+
+renderExamples();
 
 function resetResults() {
   session = null;
