@@ -1,0 +1,9 @@
+{
+  "name": "rabetak-aman",
+  "private": true,
+  "type": "module",
+  "description": "Arabic URL safety checker (VirusTotal / Safe Browsing + Gemini / Groq explanations)",
+  "scripts": {
+    "dev": "node scripts/dev.mjs"
+  }
+}

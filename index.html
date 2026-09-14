@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>رابطك آمن؟ | افحص الرابط قبل لا تفتحه</title>
+  <meta name="description" content="الصق أي رابط ونقولك إذا فيه تصيّد أو فيروسات، ونشرح لك النتيجة بكلام واضح.">
+  <meta name="theme-color" content="#0B1120">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2338BDF8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z'/%3E%3Cpath d='m9 12 2 2 4-4'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="Style.css">
+  <script type="module" src="main.js"></script>
+</head>
+<body>
+  <!-- Icon sprite (Lucide icons) -->
+  <svg class="sprite" aria-hidden="true" focusable="false">
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></symbol>
+    <symbol id="i-shield-check" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></symbol>
+    <symbol id="i-shield-alert" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="M12 8v4"/><path d="M12 16h.01"/></symbol>
+    <symbol id="i-shield-x" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m14.5 9.5-5 5"/><path d="m9.5 9.5 5 5"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
+    <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></symbol>
+    <symbol id="i-send" viewBox="0 0 24 24"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/><path d="m21.854 2.147-10.94 10.939"/></symbol>
+    <symbol id="i-message" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></symbol>
+    <symbol id="i-rotate" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></symbol>
+  </svg>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="/">
+        <svg class="icon brand-icon" aria-hidden="true"><use href="#i-shield-check"/></svg>
+        <span>رابطك آمن؟</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+    <section class="hero" aria-labelledby="hero-title">
+      <h1 id="hero-title">افحص أي رابط <span class="accent">قبل لا تفتحه</span></h1>
+      <p class="lead">الصق الرابط، ونقولك إذا فيه تصيّد أو فيروسات، ونشرح لك السالفة بكلام واضح.</p>
+
+      <form id="scan-form" class="scan-form" novalidate>
+        <label for="url-input" class="field-label">الرابط اللي تبي تفحصه</label>
+        <div class="scan-row">
+          <div class="input-wrap">
+            <svg class="icon input-icon" aria-hidden="true"><use href="#i-link"/></svg>
+            <input id="url-input" name="url" type="url" inputmode="url" dir="ltr"
+                   autocomplete="off" autocapitalize="off" spellcheck="false"
+                   placeholder="https://example.com" maxlength="2048" required
+                   aria-describedby="scan-hint scan-error">
+          </div>
+          <button id="scan-btn" class="btn btn-primary" type="submit">
+            <svg class="icon" aria-hidden="true"><use href="#i-search"/></svg>
+            <span id="scan-btn-label">افحص</span>
+          </button>
+        </div>
+        <p id="scan-hint" class="hint">ما نفتح الرابط ولا نحفظه، بس نسأل عنه خدمات فحص معروفة.</p>
+        <p id="scan-error" class="form-error" role="alert" hidden></p>
+      </form>
+    </section>
+
+    <section id="loading" class="card loading-card" hidden aria-live="polite">
+      <div class="scanner" aria-hidden="true">
+        <svg class="icon"><use href="#i-shield"/></svg>
+        <span class="scan-line"></span>
+      </div>
+      <div>
+        <p class="loading-title">لحظة، نفحص الرابط...</p>
+        <p class="muted">ممكن ياخذ لين نص دقيقة لو الرابط جديد.</p>
+      </div>
+    </section>
+
+    <section id="result" class="card result-card" hidden tabindex="-1" aria-labelledby="verdict-title">
+      <div class="verdict">
+        <div class="verdict-icon" aria-hidden="true">
+          <svg class="icon"><use id="verdict-icon" href="#i-shield-check"/></svg>
+        </div>
+        <div class="verdict-body">
+          <p class="kicker">نتيجة الفحص</p>
+          <h2 id="verdict-title"></h2>
+          <p id="verdict-text" class="muted"></p>
+        </div>
+      </div>
+
+      <p class="scanned-url">
+        <svg class="icon" aria-hidden="true"><use href="#i-link"/></svg>
+        <bdi id="scanned-url" dir="ltr"></bdi>
+      </p>
+
+      <div id="ratio" class="ratio" hidden>
+        <div class="ratio-head">
+          <span id="ratio-text"></span>
+          <span id="ratio-num" class="ratio-num" dir="ltr"></span>
+        </div>
+        <div class="meter" aria-hidden="true"><span id="meter-fill"></span></div>
+      </div>
+
+      <details id="engines" class="engines" hidden>
+        <summary>وش البرامج اللي علّمت عليه؟</summary>
+        <ul id="engine-list" class="engine-list"></ul>
+      </details>
+
+      <ul id="threats" class="threats" hidden></ul>
+
+      <p id="source-note" class="source-note"></p>
+    </section>
+
+    <section id="chat" class="card chat-card" hidden aria-labelledby="chat-title">
+      <div class="chat-head">
+        <svg class="icon" aria-hidden="true"><use href="#i-message"/></svg>
+        <div>
+          <h2 id="chat-title">وش السالفة؟</h2>
+          <p class="muted">نشرح لك النتيجة بكلام بسيط، وتقدر تسأل عن هذا الرابط.</p>
+        </div>
+      </div>
+
+      <div id="messages" class="messages" aria-live="polite"></div>
+
+      <div id="suggestions" class="suggestions" hidden>
+        <button type="button" class="chip">ليش طلعت النتيجة كذا؟</button>
+        <button type="button" class="chip">وش أسوي لو فتحته؟</button>
+        <button type="button" class="chip">كيف أعرف الروابط المزيفة؟</button>
+      </div>
+
+      <form id="chat-form" class="chat-form" hidden>
+        <label for="chat-input" class="sr-only">سؤالك عن الرابط</label>
+        <input id="chat-input" type="text" maxlength="300" autocomplete="off" placeholder="اسأل عن الرابط هذا...">
+        <button id="chat-send" class="btn btn-icon" type="submit" aria-label="أرسل">
+          <svg class="icon icon-send" aria-hidden="true"><use href="#i-send"/></svg>
+        </button>
+      </form>
+      <p id="chat-status" class="chat-status" aria-live="polite"></p>
+    </section>
+
+    <div id="again-wrap" class="again-wrap" hidden>
+      <button id="again-btn" type="button" class="btn btn-ghost">
+        <svg class="icon" aria-hidden="true"><use href="#i-rotate"/></svg>
+        <span>افحص رابط ثاني</span>
+      </button>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>النتيجة تقديرية وما تغني عن الحذر. لا تحط بياناتك في أي موقع مو متأكد منه.</p>
+    </div>
+  </footer>
+</body>
+</html>
