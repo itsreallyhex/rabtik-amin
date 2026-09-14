@@ -1,7 +1,7 @@
 import { HttpError } from './http.js';
 
-// Server-side backstop; the UI itself allows 5 follow-ups per scan.
-const MAX_FOLLOWUPS = 6;
+// Server-side backstop; the UI itself allows 10 follow-ups per scan.
+const MAX_FOLLOWUPS = 11;
 const VERDICTS = ['safe', 'suspicious', 'dangerous'];
 
 // Hidden first user turn that asks for the initial explanation.

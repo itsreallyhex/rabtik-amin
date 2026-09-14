@@ -1,6 +1,6 @@
 // ===== Settings =====
-const MAX_FOLLOWUPS = 5;                              // user questions per scan
-const RATE_LIMIT = { max: 3, windowMs: 60_000 };      // user messages per minute (saves free API quota)
+const MAX_FOLLOWUPS = 10;                             // user questions per scan
+const RATE_LIMIT = { max: 5, windowMs: 60_000 };      // user messages per minute (saves free API quota)
 const RATE_KEY = 'rabet:message-times';
 
 // Test the fallbacks: open the site with ?fail=virustotal,gemini (any of: virustotal, safebrowsing, gemini, groq).

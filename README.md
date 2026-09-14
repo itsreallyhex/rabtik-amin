@@ -16,7 +16,7 @@ Browser (index.html, Style.css, main.js)
 - Both fallback pairs use the same `withFallback(primary, secondary)` helper in `main.js`.
 - API keys live only in the serverless functions (`api/*.js`), never in the browser.
 - The AI system prompt is built server-side (`api/_lib/chat.js`), so the chat stays scoped to the current scan.
-- Limits: 5 follow-up questions per scan (server also rejects more than 6) and 3 messages per minute (tracked in localStorage).
+- Limits: 10 follow-up questions per scan (server also rejects more than 11) and 5 messages per minute (tracked in localStorage).
 
 ## Environment variables
 
