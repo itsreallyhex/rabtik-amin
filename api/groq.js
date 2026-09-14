@@ -1,8 +1,9 @@
-// Fallback AI explainer (Llama on Groq). POST { scan, messages } -> { reply }.
+// Fallback AI explainer on Groq. POST { scan, messages } -> { reply }.
 import { ensureOk, getKey, proxy } from './_lib/http.js';
 import { cleanReply, parseChatRequest } from './_lib/chat.js';
 
-const MODEL = 'llama-3.3-70b-versatile';
+// Groq's Llama models are Enterprise-only now (free keys get a 404), so use their free production model.
+const MODEL = 'openai/gpt-oss-120b';
 
 export const POST = proxy('groq', async (body) => {
   const { system, turns } = parseChatRequest(body);
@@ -14,7 +15,9 @@ export const POST = proxy('groq', async (body) => {
       model: MODEL,
       messages: [{ role: 'system', content: system }, ...turns],
       temperature: 0.5,
-      max_tokens: 400,
+      // Reasoning model: keep reasoning light; its tokens count toward max_tokens.
+      reasoning_effort: 'low',
+      max_tokens: 1024,
     }),
     signal: AbortSignal.timeout(20_000),
   });

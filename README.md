@@ -78,7 +78,7 @@ For a "real" failure test, remove a key in Vercel and redeploy. The fallback han
   - Known URLs cost 1 request.
   - New URLs are submitted and polled (up to 4 requests, about 20 seconds).
   - If the analysis isn't ready in time, the scan falls back to Safe Browsing.
-- Model names are constants at the top of `api/gemini.js` (`gemini-flash-latest`) and `api/groq.js` (`llama-3.3-70b-versatile`). Change them there if a model is retired.
+- Model names are constants at the top of `api/gemini.js` (`gemini-2.5-flash`) and `api/groq.js` (`openai/gpt-oss-120b`). Change them there if a model is retired.
 - VirusTotal verdict thresholds are in `verdictFor()` in `api/virustotal.js`:
   - 3 or more malicious → dangerous
   - any malicious, or 2 or more suspicious → suspicious

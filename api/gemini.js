@@ -2,8 +2,7 @@
 import { ensureOk, getKey, proxy } from './_lib/http.js';
 import { cleanReply, parseChatRequest } from './_lib/chat.js';
 
-// "-latest" alias tracks Google's current Flash model so the project doesn't break when a version is retired.
-const MODEL = 'gemini-flash-latest';
+const MODEL = 'gemini-2.5-flash';
 
 export const POST = proxy('gemini', async (body) => {
   const { system, turns } = parseChatRequest(body);
@@ -14,8 +13,8 @@ export const POST = proxy('gemini', async (body) => {
     body: JSON.stringify({
       systemInstruction: { parts: [{ text: system }] },
       contents: turns.map((t) => ({ role: t.role === 'assistant' ? 'model' : 'user', parts: [{ text: t.content }] })),
-      // Generous token cap: on thinking models, reasoning tokens count against it too.
-      generationConfig: { temperature: 0.5, maxOutputTokens: 2048 },
+      // Thinking off: short explanations don't need it, and it keeps replies well under Netlify's ~10s function limit.
+      generationConfig: { temperature: 0.5, maxOutputTokens: 600, thinkingConfig: { thinkingBudget: 0 } },
     }),
     signal: AbortSignal.timeout(20_000),
   });
