@@ -27,6 +27,10 @@ The server builds the AI instructions in `api/_lib/chat.js`, so the browser can'
 
 Each scan allows 10 follow-up questions and 5 messages a minute. The browser enforces both (the per-minute count is kept in localStorage). The server also rejects any conversation longer than 11 questions.
 
+## Security testing
+
+We tried to break أمين on purpose with 13 kinds of prompt injection and jailbreak attacks in the live chat, including instruction overrides, persona hijacks, DAN and Opposite Mode templates, encoded payloads, fake system messages, and English versions of all of these. All 13 were blocked: each got the fixed off-topic refusal, and none leaked the hidden instructions. [SECURITY_TESTING.md](SECURITY_TESTING.md) lists every attack, explains why the defenses hold, and describes the limits of the testing.
+
 ## Example links
 
 Under the scan box are 10 example links for people who don't have one to try. Clicking one fills in the box and runs a normal scan. It never opens the site.
