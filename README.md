@@ -20,6 +20,7 @@ Both chains use the same `withFallback(primary, secondary)` helper in `main.js`.
 
 The server builds the AI instructions in `api/_lib/chat.js`, so the browser can't change them. They tell the model to:
 
+- introduce itself as "أمين", the site's AI assistant, when asked who it is (the chat labels each AI reply "أمين" and shows a note that it can make mistakes)
 - reply in casual Saudi dialect, in 2 or 3 short sentences
 - skip technical words and explain things for someone who doesn't know tech
 - answer only questions about the scanned link or link safety, and give a fixed refusal for anything else
@@ -100,5 +101,5 @@ The browser console (F12) logs each fallback, for example `[fallback] gemini fai
 
 - VirusTotal's free tier allows 4 requests a minute and 500 a day. A link it already knows costs 1 request. A new link is submitted and then checked twice, which uses up to 4 requests and takes about 20 seconds. If the result still isn't ready, the scan falls back to Safe Browsing.
 - VirusTotal won't scan its own domain (it returns 403), so `virustotal.com` always gets the Safe Browsing result.
-- The AI models are `gemini-3.6-flash` (set in `api/gemini.js`) and `openai/gpt-oss-120b` (set in `api/groq.js`). Groq's Llama models are Enterprise-only now, and free keys get a 404 for them.
+- The AI models are `gemini-3.6-flash`, then `gemma-4-26b-a4b-it` once Gemini's free limit of 20 requests a day runs out (both in `api/gemini.js`), and `openai/gpt-oss-120b` (set in `api/groq.js`). Groq's Llama models are Enterprise-only now, and free keys get a 404 for them.
 - `verdictFor()` in `api/virustotal.js` decides the verdict. Three or more "malicious" flags make a link dangerous. One "malicious" flag or two "suspicious" flags make it suspicious. Anything less is safe.

@@ -477,6 +477,7 @@ input[aria-invalid='true'] { border-color: var(--danger); }
 .chat-head > .icon { width: 24px; height: 24px; margin-top: 4px; color: var(--accent); }
 .chat-head h2 { font-size: 1.2rem; font-weight: 700; }
 .chat-head .muted { font-size: 0.9rem; }
+.chat-head .ai-note { margin-top: 4px; font-size: 0.8rem; color: var(--muted); opacity: 0.85; }
 
 .messages {
   display: flex;
@@ -491,6 +492,16 @@ input[aria-invalid='true'] { border-color: var(--danger); }
   border-radius: 14px;
   white-space: pre-line;
   overflow-wrap: anywhere;
+  animation: rise 0.25s var(--ease) both;
+}
+/* "أمين" label above each AI reply */
+.msg-name {
+  align-self: flex-start;
+  margin-bottom: -6px;
+  padding-inline: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--accent);
   animation: rise 0.25s var(--ease) both;
 }
 .msg-assistant {

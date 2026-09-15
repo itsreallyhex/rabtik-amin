@@ -11,6 +11,7 @@ const SIMULATED_FAILURES = new Set(
 
 // ===== Copy (Saudi dialect) =====
 const T = {
+  aiName: 'أمين',
   scanBtn: 'افحص',
   scanningBtn: 'نفحص...',
   emptyUrl: 'الصق الرابط أول وبعدين اضغط افحص.',
@@ -349,6 +350,8 @@ el.againBtn.addEventListener('click', () => {
 // ===== AI explanation & follow-up chat =====
 
 function addMessage(role, text, { error = false } = {}) {
+  // AI replies are signed by أمين; site error messages aren't AI-written, so they stay unsigned.
+  if (role === 'assistant' && !error) el.messages.append(h('div', 'msg-name', T.aiName));
   const bubble = h('div', `msg msg-${role}${error ? ' msg-error' : ''}`, text);
   el.messages.append(bubble);
   // Only follow the conversation once the user is chatting; the first explanation shouldn't pull focus off the verdict.
