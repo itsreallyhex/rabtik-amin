@@ -29,7 +29,7 @@ export function proxy(provider, handler) {
   return async function POST(request) {
     try {
       const text = await request.text();
-      if (text.length > 20_000) throw new HttpError(413, 'body_too_large');
+      if (text.length > 30_000) throw new HttpError(413, 'body_too_large');
       let body;
       try {
         body = JSON.parse(text);

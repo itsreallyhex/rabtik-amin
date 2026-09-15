@@ -29,6 +29,13 @@ const T = {
   ratioSome: (flagged, total) => `${flagged} من ${total} برنامج حماية علّموا عليه`,
 };
 
+// Used when the AI reply comes without its own suggestions.
+const FALLBACK_SUGGESTIONS = {
+  safe: ['ليش طلعت النتيجة كذا؟', 'كيف أعرف إنه الموقع الأصلي؟', 'كيف أعرف الروابط المزيفة؟'],
+  suspicious: ['وش اللي خلاه مشبوه؟', 'وش أسوي لو فتحته؟', 'كيف أتأكد منه؟'],
+  dangerous: ['وش اللي لقوه فيه؟', 'وش أسوي لو فتحته؟', 'كيف أعرف الروابط المزيفة؟'],
+};
+
 const VERDICT_UI = {
   safe: {
     icon: '#i-shield-check',
@@ -104,7 +111,10 @@ function assertScan(data) {
 
 function assertReply(data) {
   if (typeof data?.reply !== 'string' || !data.reply.trim()) throw new Error('empty reply');
-  return data.reply.trim();
+  const suggestions = Array.isArray(data.suggestions)
+    ? data.suggestions.filter((s) => typeof s === 'string' && s.trim()).map((s) => s.trim())
+    : [];
+  return { reply: data.reply.trim(), suggestions };
 }
 
 const scanUrl = (url) =>
@@ -244,6 +254,7 @@ function resetResults() {
   el.chat.hidden = true;
   el.againWrap.hidden = true;
   el.messages.replaceChildren();
+  el.suggestions.replaceChildren();
   el.chatForm.hidden = true;
   el.suggestions.hidden = true;
   setStatus('');
@@ -373,7 +384,7 @@ function updateChatControls() {
   const canSend = ready && !s.busy && left > 0;
 
   el.chatForm.hidden = !ready || left <= 0;
-  el.suggestions.hidden = !ready || s.followups > 0 || left <= 0;
+  el.suggestions.hidden = !ready || s.busy || left <= 0 || !el.suggestions.children.length;
   el.chatInput.disabled = !canSend;
   el.chatSend.disabled = !canSend;
   for (const chip of el.suggestions.children) chip.disabled = !canSend;
@@ -401,6 +412,21 @@ async function fetchReply(s) {
   }
 }
 
+// Tap-to-send chips under the chat, refreshed after every reply; skips anything the user already asked.
+function renderSuggestions(s, suggestions) {
+  const asked = new Set(s.history.filter((m) => m.role === 'user').map((m) => m.content));
+  const list = (suggestions.length ? suggestions : FALLBACK_SUGGESTIONS[s.scan.verdict])
+    .filter((text) => !asked.has(text))
+    .slice(0, 3);
+  el.suggestions.replaceChildren(
+    ...list.map((text) => {
+      const chip = h('button', 'chip', text);
+      chip.type = 'button';
+      return chip;
+    }),
+  );
+}
+
 async function explainResult() {
   const s = session;
   setBusy(true);
@@ -423,9 +449,10 @@ async function explainResult() {
     return;
   }
 
-  s.history.push({ role: 'assistant', content: reply });
+  s.history.push({ role: 'assistant', content: reply.reply });
+  renderSuggestions(s, reply.suggestions);
   setBusy(false);
-  addMessage('assistant', reply);
+  addMessage('assistant', reply.reply);
 }
 
 async function sendFollowup(text) {
@@ -445,9 +472,10 @@ async function sendFollowup(text) {
   if (s !== session) return;
 
   if (reply) {
-    s.history.push({ role: 'assistant', content: reply });
+    s.history.push({ role: 'assistant', content: reply.reply });
+    renderSuggestions(s, reply.suggestions);
     setBusy(false);
-    addMessage('assistant', reply);
+    addMessage('assistant', reply.reply);
   } else {
     // Keep the history alternating and give the question back so it doesn't count.
     s.history.pop();

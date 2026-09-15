@@ -12,7 +12,25 @@ function verdictFor(malicious, suspicious) {
   return 'safe';
 }
 
-function summarize(url, stats = {}, results = {}) {
+// Extra context from VirusTotal's saved report so the AI can explain *why* (only available for known URLs).
+function reportDetails(url, attrs) {
+  const categories = [...new Set(Object.values(attrs.categories ?? {}).map((c) => String(c).replace(/\s*\(.*?\)\s*$/, '')))];
+  let finalHost = '';
+  try {
+    const host = new URL(attrs.last_final_url).hostname;
+    if (host !== new URL(url).hostname) finalHost = host;
+  } catch {}
+  return {
+    title: attrs.title || '',
+    categories: categories.slice(0, 6),
+    threatNames: (attrs.threat_names ?? []).slice(0, 5),
+    passwordBox: (attrs.tags ?? []).includes('password-input'),
+    finalHost,
+    firstSeenYear: attrs.first_submission_date ? new Date(attrs.first_submission_date * 1000).getUTCFullYear() : null,
+  };
+}
+
+function summarize(url, stats = {}, results = {}, details = null) {
   const count = (key) => Number(stats[key]) || 0;
   const malicious = count('malicious');
   const suspicious = count('suspicious');
@@ -31,6 +49,7 @@ function summarize(url, stats = {}, results = {}) {
     stats: { flagged: malicious + suspicious, total, malicious, suspicious },
     engines,
     threats: [],
+    details,
   };
 }
 
@@ -45,7 +64,7 @@ export const POST = proxy('virustotal', async (body) => {
   if (lookup.ok) {
     const attrs = (await lookup.json())?.data?.attributes;
     if (attrs?.last_analysis_results && Object.keys(attrs.last_analysis_results).length) {
-      return summarize(url, attrs.last_analysis_stats, attrs.last_analysis_results);
+      return summarize(url, attrs.last_analysis_stats, attrs.last_analysis_results, reportDetails(url, attrs));
     }
   } else if (lookup.status !== 404) {
     await ensureOk(lookup, 'virustotal');
