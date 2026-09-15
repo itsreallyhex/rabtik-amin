@@ -308,6 +308,36 @@ export function parseChatRequest(body) {
 const stripMarkdown = (text) =>
   (typeof text === 'string' ? text : '').replace(/\*\*|__|`/g, '').replace(/^\s*#+\s*/gm, '').trim();
 
+// Words that only show up when a model talks about its own writing, e.g. "(incorrectly used English in my head)".
+const META_WORDS = /\b(?:wait|oops|hmm+|actually|correction|correcting|incorrect(?:ly)?|mistake|myself|note to self|let me|let's|i'm|i am|i should|i used|i meant|my head|rephras\w*|rewrit\w*|dialect|jargon|msa|prompt|instructions?)\b/i;
+// English words that turn a run of Latin words into a sentence; names like "Trend Micro" or "Google Safe Browsing" have none.
+const FUNCTION_WORDS = new Set(['i', 'my', 'me', 'the', 'a', 'an', 'to', 'in', 'of', 'is', 'are', 'was', 'were', 'be', 'been', 'not', 'no', 'should', 'must', 'used', 'using', 'use', 'this', 'that', 'it', 'with', 'instead', 'here']);
+// The same kind of self-talk in Arabic, only checked inside brackets.
+const ARABIC_META = /انتظر|تصحيح|ملاحظة لنفسي|فصحى|اللهجة/;
+
+// "(no technical terms)" -> 1; "(Trend Micro)" -> 0.
+const englishFunctionWords = (text) => (text.toLowerCase().match(/[a-z']+/g) ?? []).filter((w) => FUNCTION_WORDS.has(w)).length;
+const latinWordCount = (text) => (text.match(/[A-Za-z][A-Za-z'-]*/g) ?? []).length;
+
+// True when the text contains the model's own reasoning or self-correction instead of an answer.
+function leaksReasoning(text) {
+  // Links, file names and quoted page titles can legitimately be English, so leave them out.
+  const body = text
+    .replace(/\b(?:https?:\/\/)?[\w-]+(?:\.[\w-]+)+(?:\/\S*)?/gi, ' ')
+    .replace(/"[^"]*"|“[^”]*”|«[^»]*»|(?<![A-Za-z])'[^']*'/g, ' ');
+
+  for (const [, aside] of body.matchAll(/[([]([^)\]]{1,200})[)\]]/g)) {
+    if (META_WORDS.test(aside) || ARABIC_META.test(aside)) return true;
+    if (latinWordCount(aside) >= 2 && englishFunctionWords(aside) >= 1) return true;
+  }
+
+  // Outside brackets: an English phrase or sentence dropped into the Arabic reply.
+  for (const [run] of body.matchAll(/[A-Za-z][A-Za-z',-]*(?:\s+[A-Za-z][A-Za-z',-]*)+/g)) {
+    if (META_WORDS.test(run) || (latinWordCount(run) >= 3 && englishFunctionWords(run) >= 2)) return true;
+  }
+  return false;
+}
+
 // Turns the model's JSON output into { reply, suggestions }; rejects empty or broken answers (so the fallback kicks in).
 export function parseReply(text) {
   const raw = typeof text === 'string' ? text.trim().replace(/^```(?:json)?\s*|\s*```$/g, '') : '';
@@ -323,10 +353,14 @@ export function parseReply(text) {
 
   const reply = stripMarkdown(data.reply).slice(0, 1200);
   if (!reply) throw new HttpError(502, 'empty_reply');
-  // Gemma without thinking sometimes corrects itself mid-reply, e.g. "(wait, no technical terms) ...".
-  if (/\((?:wait|actually|hmm|oops|note|correction)\b/i.test(reply)) throw new HttpError(502, 'leaked_reasoning');
+  // Gemma without thinking sometimes corrects itself mid-reply, e.g. "(wait, no technical terms) ..." or
+  // "(incorrectly used English in my head)". Reject it so the next model answers instead.
+  if (/\((?:wait|actually|hmm|oops|note|correction)\b/i.test(reply) || leaksReasoning(reply)) {
+    throw new HttpError(502, 'leaked_reasoning');
+  }
+  // A leaky chip is just dropped; the page fills in fallback chips if none are left.
   const suggestions = Array.isArray(data.suggestions)
-    ? [...new Set(data.suggestions.map((s) => stripMarkdown(s).slice(0, 60)).filter(Boolean))].slice(0, 3)
+    ? [...new Set(data.suggestions.map((s) => stripMarkdown(s).slice(0, 60)).filter((s) => s && !leaksReasoning(s)))].slice(0, 3)
     : [];
   return { reply, suggestions };
 }
