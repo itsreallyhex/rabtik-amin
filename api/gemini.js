@@ -52,7 +52,8 @@ export const POST = proxy('gemini', async (body) => {
       return await generate(model, system, turns);
     } catch (err) {
       lastError = err;
-      console.warn(`[gemini] ${model} failed (${err.code ?? err.message}), trying the next model`);
+      // Timeouts are DOMExceptions whose numeric `code` means nothing in logs, so show their name instead.
+      console.warn(`[gemini] ${model} failed (${typeof err.code === 'string' ? err.code : err.name}), trying the next model`);
     }
   }
   throw lastError;
